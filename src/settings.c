@@ -391,13 +391,7 @@ void load_settings(char *cmdline_config_path)
         );
 
         //If "icon_path" isn't set, fall back to "icon_folders" for backwards compatibility.
-        if (ini_is_set("global", "icon_path") || cmdline_is_set("-icon_path")) {
-                settings.icon_path = option_get_string(
-                        "global",
-                        "icon_path", "-icon_path", icon_path,
-                        "paths to default icons"
-                );
-        } else if (ini_is_set("global", "icon_folders") || cmdline_is_set("-icon_folders")) {
+        if (ini_is_set("global", "icon_folders") || cmdline_is_set("-icon_folders")) {
                 settings.icon_path = option_get_string(
                         "global",
                         "icon_folders", "-icon_folders", icon_path,
@@ -405,7 +399,11 @@ void load_settings(char *cmdline_config_path)
                 );
                 fprintf(stderr, "Warning: 'icon_folders' is deprecated, please use 'icon_path' instead.\n");
         } else {
-                settings.icon_path = icon_path;
+                settings.icon_path = option_get_string(
+                        "global",
+                        "icon_path", "-icon_path", icon_path,
+                        "paths to default icons"
+                );
         };
 
         {
