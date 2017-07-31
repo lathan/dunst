@@ -390,12 +390,19 @@ void load_settings(char *cmdline_config_path)
                 "Scale larger icons down to this size, set to 0 to disable"
         );
 
-        //If "icon_path" isn't set, fall back to "icon_folders" for backwards compatibility.
-        if (ini_is_set("global", "icon_folders") || cmdline_is_set("-icon_folders")) {
+        // If "icon_path" isn't set, fall back to "icon_folders" for backwards compatibility.
+        // if neither is set, use the default value.
+        if (ini_is_set("global", "icon_path") || cmdline_is_set("-icon_path")) {
+                settings.icon_path = option_get_string(
+                        "global",
+                        "icon_path", "-icon_path", icon_path,
+                        "paths to default icons"
+                );
+        } else if (ini_is_set("global", "icon_folders") || cmdline_is_set("-icon_folders")) {
                 settings.icon_path = option_get_string(
                         "global",
                         "icon_folders", "-icon_folders", icon_path,
-                        "folders to default icons"
+                        "folders to default icons (deprecated, please use 'icon_path' instead"
                 );
                 fprintf(stderr, "Warning: 'icon_folders' is deprecated, please use 'icon_path' instead.\n");
         } else {
